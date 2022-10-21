@@ -1,0 +1,6 @@
+name = "meiliverse-randomizer"
+main = "src/index.ts"
+compatibility_date = "2022-10-18"
+
+[triggers]
+crons = [ "0 * * * *" ]
