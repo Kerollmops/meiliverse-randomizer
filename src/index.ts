@@ -44,21 +44,23 @@ export default {
 			let url = `${base_url}/channels/${env.DISCORD_CHANNEL_ID}/messages?limit=${limit}${before}`;
 			const messages = await fetch(url, msgs_init).then(res => (res.json() as Message[]));
 			for (var message of messages) {
-				// TODO get trully all reactions
-				let emoji = encodeURI(validate_emoji);
-				let url = `${base_url}/channels/${env.DISCORD_CHANNEL_ID}/messages/${message.id}/reactions/${emoji}`;
-				let users = await fetch(url, msgs_init).then(res => (res.json() as User[]));
-				await new Promise(f => setTimeout(f, 1000)); // wait 1 second
-				const is_admin = (user) => user.id === env.VALIDATOR_USER_ID;
+				if (message.attachments.length != 0) {
+					// TODO get trully all reactions
+					let emoji = encodeURI(validate_emoji);
+					let url = `${base_url}/channels/${env.DISCORD_CHANNEL_ID}/messages/${message.id}/reactions/${emoji}`;
+					let users = await fetch(url, msgs_init).then(res => (res.json() as User[]));
+					await new Promise(f => setTimeout(f, 1000)); // wait 1 second
+					const is_admin = (user) => user.id === env.VALIDATOR_USER_ID;
 
-				if (Array.isArray(users) && users.some(is_admin)) {
-					// Find the number of upvotes for the attachements
-					const found = message.reactions.find(r => { return r.emoji.name === upvote_emoji });
-					let weight = 1;
-					if (found) { weight = weight + found.count }
+					if (Array.isArray(users) && users.some(is_admin)) {
+						// Find the number of upvotes for the attachements
+						const found = message.reactions.find(r => { return r.emoji.name === upvote_emoji });
+						let weight = 1;
+						if (found) { weight = weight + found.count }
 
-					for (var attachment of message.attachments) {
-						weighted_pictures.push({ weight, url: attachment.proxy_url });
+						for (var attachment of message.attachments) {
+							weighted_pictures.push({ weight, url: attachment.proxy_url });
+						}
 					}
 				}
 			}
