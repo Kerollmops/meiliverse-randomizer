@@ -70,10 +70,11 @@ export default {
 			if (last) { last_message_id = last.id } else { break }
 		}
 
-		// Generate a flat array with all the picture corectly weighted
+		// Generate a flat array with every single pictures correctly weighted
+		// The score is the fibonacci output of the number of original weight.
 		var flat_pictures: [String] = [];
 		for (var weighted_picture of weighted_pictures) {
-			for (var _i = 0; _i < weighted_picture.weight; _i++) {
+			for (var _i = 0; _i < fibonacci(weighted_picture.weight); _i++) {
 				flat_pictures.push(weighted_picture.url);
 			}
 		}
@@ -114,4 +115,12 @@ type User = {
 type WeightedPicture = {
 	weight: Number;
 	url: String;
+}
+
+function fibonacci(num) {
+	if (num <= 1) {
+		return 1;
+	}
+
+	return fibonacci(num - 1) + fibonacci(num - 2);
 }
